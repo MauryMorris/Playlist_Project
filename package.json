@@ -1,0 +1,17 @@
+{
+  "name": "projekt-youtube",
+  "version": "0.0.1",
+  "description": "youtube playlist storage server",
+  "main": "index.js",
+  "scripts": {
+    "start": "node playlist_server.js"
+  },
+  "author": "Maurycy Gawriłow",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "knex": "^2.3.0",
+    "sqlite3": "^5.1.2"
+  }
+}
