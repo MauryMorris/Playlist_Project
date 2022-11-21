@@ -11,7 +11,7 @@ exports.up = function(knex, Promise) {
     table.increments('id'); // kolumna id z właściwością autoinkrementacji
     table.string('song_name').notNullable(); //kolumna song_name z właściwością notNullable
     table.string('src_link').notNullable(); //kolumna src_link z właściwością notNullable
-    table.integer('playlist_id').references('id').inTable('playlist'); //relacja id z tabeli playlist do playlist_id w tabeli songs
+    table.integer('playlist_id').notNullable().references('id').inTable('playlist'); //relacja id z tabeli playlist do playlist_id w tabeli songs
   })
 };
 
