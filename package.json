@@ -4,7 +4,8 @@
   "description": "youtube playlist storage server",
   "main": "index.js",
   "scripts": {
-    "start": "node playlist_server.js"
+    "start": "node playlist_server.js",
+    "knex": "./node_modules/.bin/knex"
   },
   "author": "Maurycy Gawriłow",
   "license": "ISC",
