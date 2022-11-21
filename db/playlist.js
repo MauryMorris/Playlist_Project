@@ -19,29 +19,52 @@ async function getAllSongs(playlista) {
 
 async function insertSong(playlista, putData) {
     const playlist_space = await knex("playlist").select("*").where("name", playlista).first();
-    const playlist_id = playlist_space.id;
+    const playlist_id = playlist_space?.id;
 
-    if (playlist_id)
+    if (playlist_id !== undefined)
     {
-        return await knex('songs').insert({song_name: putData.song_name,src_link: putData.src_link,playlist_id: playlist_id}).then(()=>{});
-    };
+        return await knex('songs').insert({
+            ...putData,
+            playlist_id
+        });
+    }
+    throw new Error(`Such playlist (as: ${playlista}) does not exist!`);
 };
 
 async function getAllPlaylists() {
-    return await knex('playlist').select('id','name');
+    return await knex('playlist').select('name');
 };
 
 async function deletePlaylist(playlista) {
-    const playlist_space = await knex("playlist").select("*").where("name", playlista).first();
-    const playlist_id = playlist_space.id;
-    console.log(playlist_space);
-    console.log(playlist_id);
+    const playlist = await knex("playlist").select("id").where("name", playlista).first();
+    const songs = await knex('songs').select('*').where("playlist_id", playlist.id);
+    await songs.forEach(async song => {
+        await knex('songs').where('id', song.id).del();
+    });
+    await knex("playlist").where('name', playlista).del();
 };
+
+async function delSong(playlistName, songId) {
+    const playlist = await knex("playlist").select("id").where("name", playlistName).first();
+    console.log(playlist);
+    const songs = await knex('songs').select('*').where("playlist_id", playlist.id);
+    console.log(songs);
+    if(songs && songs.length > 0) {
+        const songToDel = songs[songId]?.id;
+        if (songToDel === undefined) {
+            throw new Error(`Song with orderId: ${songId} does not exits`);
+        }
+        await knex('songs').where('id', songToDel).del();
+        return;
+    }
+    throw new Error('Playlist empty');
+}
 
 module.exports = {
     createPlaylist,
     getAllSongs,
     insertSong,
     getAllPlaylists,
-    deletePlaylist
+    deletePlaylist,
+    delSong
 }
